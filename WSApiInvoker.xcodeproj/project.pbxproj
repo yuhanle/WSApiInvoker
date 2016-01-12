@@ -37,7 +37,7 @@
 		FE6DA7DB1C449E3C006DBA5A /* UIProgressView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = FE6DA7C81C449E3C006DBA5A /* UIProgressView+AFNetworking.m */; };
 		FE6DA7DC1C449E3C006DBA5A /* UIRefreshControl+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = FE6DA7CA1C449E3C006DBA5A /* UIRefreshControl+AFNetworking.m */; };
 		FE6DA7DD1C449E3C006DBA5A /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = FE6DA7CC1C449E3C006DBA5A /* UIWebView+AFNetworking.m */; };
-		FE6DA7E41C44A616006DBA5A /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = FE6DA7E31C44A616006DBA5A /* JSONKit.m */; };
+		FE6DA7E41C44A616006DBA5A /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = FE6DA7E31C44A616006DBA5A /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -592,6 +592,7 @@
 				FE6DA77F1C449C84006DBA5A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		FE6DA7801C449C84006DBA5A /* Build configuration list for PBXNativeTarget "WSApiInvokerUITests" */ = {
 			isa = XCConfigurationList;
@@ -600,6 +601,7 @@
 				FE6DA7821C449C84006DBA5A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
