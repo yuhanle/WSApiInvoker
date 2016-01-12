@@ -1,0 +1,41 @@
+//
+//  G100
+//
+//  Created by Tilink on 15/5/8.
+//  Copyright (c) 2015年 Tilink. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "ApiResponse.h"
+#import "ApiRequest.h"
+
+//api 异步调用回调Block
+typedef void (^API_CALLBACK)(NSInteger statusCode, ApiResponse *response, BOOL requestSuccess);
+
+@protocol AFIdonglerApiInvokerDelegate;
+@interface AFIdonglerApiInvoker : NSObject
+
+- (void)request:(NSURLRequest *)request callback:(API_CALLBACK)callback;
+- (void)request:(NSURLRequest *)request apiRequest:(ApiRequest *)apiRequest callback:(API_CALLBACK)callback;
+
++ (id)apiInvokerWithBaseUrl:(NSString *)baseUrl;
++ (id)apiHttpsInvokerWithBaseUrl:(NSString *)baseUrl;
+
+- (void)addRequest:(ApiRequest *)apiRequest;
+
+- (void)removeAllRequest;
+- (void)removeRequest:(ApiRequest *)apiRequest normal:(BOOL)normal;
+
+- (void)cancellAllRequest;
+- (void)cancellAllRequestExcept:(ApiRequest *)apiRequest;
+
+@property (strong, nonatomic) NSMutableArray *apiRequestArray;
+@property (nonatomic, weak) id<AFIdonglerApiInvokerDelegate> delegate;
+@end
+
+@protocol AFIdonglerApiInvokerDelegate<NSObject>
+@optional
+- (void)handleError:(NSInteger)statusCode response:(ApiResponse *)apiResponse;
+- (void)handleError:(NSInteger)statusCode apiRequest:(ApiRequest *)apiRequest response:(ApiResponse *)apiResponse;
+
+@end

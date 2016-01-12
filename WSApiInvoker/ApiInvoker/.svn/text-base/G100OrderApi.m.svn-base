@@ -1,0 +1,69 @@
+//
+//  G100OrderApi.m
+//  G100
+//
+//  Created by Tilink on 15/5/9.
+//  Copyright (c) 2015年 Tilink. All rights reserved.
+//
+
+#import "G100OrderApi.h"
+
+@implementation G100OrderApi
+
++(instancetype)sharedInstance {
+    static G100OrderApi * instance;
+    static dispatch_once_t oneToken;
+    dispatch_once(&oneToken, ^{
+        instance = [[self alloc]init];
+    });
+    return instance;
+}
+
+-(void)loadMyorderWithCallback:(API_CALLBACK)callback {
+    ApiRequest *request = [ApiRequest requestWithBizData:nil];
+    [self postApi:@"order/listorder" andRequest:request callback:callback];
+}
+
+-(void)submitOrderWithDevid:(NSString *)devid
+                  productid:(NSInteger)productid
+                  unitprice:(CGFloat)unitprice
+                     amount:(NSInteger)amount
+                   discount:(CGFloat)discount
+                     coupon:(NSString *)coupon
+                      price:(CGFloat)price
+                  insurance:(NSDictionary *)insurance
+                   callback:(API_CALLBACK)callback {
+    ApiRequest *request = [ApiRequest requestWithBizData:@{
+                                                           @"devid" : EMPTY_IF_NIL(devid),
+                                                           @"productid" : EMPTY_IF_NIL([NSNumber numberWithInteger:productid]),
+                                                           @"unitprice" : EMPTY_IF_NIL([NSNumber numberWithFloat:unitprice]),
+                                                           @"amount" : EMPTY_IF_NIL([NSNumber numberWithInteger:amount]),
+                                                           @"discount" : EMPTY_IF_NIL([NSNumber numberWithFloat:discount]),
+                                                           @"coupon" : EMPTY_IF_NIL(coupon),
+                                                           @"price" : EMPTY_IF_NIL([NSNumber numberWithFloat:price]),
+                                                           @"insurance" : EMPTY_IF_NIL(insurance)
+                                                           }];
+    [self postApi:@"order/submitorder" andRequest:request callback:callback];
+}
+
+-(void)servicePayFinishedWithOrderid:(NSInteger)orderid callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{@"orderid" : EMPTY_IF_NIL([NSNumber numberWithInteger:orderid])}];
+    [self postApi:@"order/servicepayfinished" andRequest:request callback:callback];
+}
+
+-(void)insurancePayFinishedWithOrderid:(NSInteger)orderid callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{@"orderid" : EMPTY_IF_NIL([NSNumber numberWithInteger:orderid])}];
+    [self postApi:@"insurance/payfinished" andRequest:request callback:callback];
+}
+
+-(void)checkInsuranceOrderDetailWithOrderid:(NSInteger)orderid callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{@"orderid" : EMPTY_IF_NIL([NSNumber numberWithInteger:orderid])}];
+    [self postApi:@"insurance/insurancedetail" andRequest:request callback:callback];
+}
+
+-(void)cancelOrderWithOrderid:(NSInteger)orderid callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{@"orderid" : EMPTY_IF_NIL([NSNumber numberWithInteger:orderid])}];
+    [self postApi:@"order/cancelorder" andRequest:request callback:callback];
+}
+
+@end

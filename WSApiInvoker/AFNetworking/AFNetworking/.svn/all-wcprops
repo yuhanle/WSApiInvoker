@@ -1,0 +1,119 @@
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/General/3rd/AFNetworking/AFNetworking
+END
+AFHTTPSessionManager.m
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/General/3rd/AFNetworking/AFNetworking/AFHTTPSessionManager.m
+END
+AFURLResponseSerialization.m
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/General/3rd/AFNetworking/AFNetworking/AFURLResponseSerialization.m
+END
+AFNetworking.h
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/General/3rd/AFNetworking/AFNetworking/AFNetworking.h
+END
+AFSecurityPolicy.h
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/General/3rd/AFNetworking/AFNetworking/AFSecurityPolicy.h
+END
+AFSecurityPolicy.m
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/General/3rd/AFNetworking/AFNetworking/AFSecurityPolicy.m
+END
+AFURLSessionManager.h
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/General/3rd/AFNetworking/AFNetworking/AFURLSessionManager.h
+END
+AFURLConnectionOperation.h
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/General/3rd/AFNetworking/AFNetworking/AFURLConnectionOperation.h
+END
+AFHTTPRequestOperationManager.h
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/General/3rd/AFNetworking/AFNetworking/AFHTTPRequestOperationManager.h
+END
+AFNetworkReachabilityManager.h
+K 25
+svn:wc:ra_dav:version-url
+V 145
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/General/3rd/AFNetworking/AFNetworking/AFNetworkReachabilityManager.h
+END
+AFURLSessionManager.m
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/General/3rd/AFNetworking/AFNetworking/AFURLSessionManager.m
+END
+AFURLConnectionOperation.m
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/General/3rd/AFNetworking/AFNetworking/AFURLConnectionOperation.m
+END
+AFHTTPRequestOperation.h
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/General/3rd/AFNetworking/AFNetworking/AFHTTPRequestOperation.h
+END
+AFHTTPRequestOperationManager.m
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/General/3rd/AFNetworking/AFNetworking/AFHTTPRequestOperationManager.m
+END
+AFURLRequestSerialization.h
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/General/3rd/AFNetworking/AFNetworking/AFURLRequestSerialization.h
+END
+AFNetworkReachabilityManager.m
+K 25
+svn:wc:ra_dav:version-url
+V 145
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/General/3rd/AFNetworking/AFNetworking/AFNetworkReachabilityManager.m
+END
+AFURLRequestSerialization.m
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/General/3rd/AFNetworking/AFNetworking/AFURLRequestSerialization.m
+END
+AFHTTPSessionManager.h
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/General/3rd/AFNetworking/AFNetworking/AFHTTPSessionManager.h
+END
+AFHTTPRequestOperation.m
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/General/3rd/AFNetworking/AFNetworking/AFHTTPRequestOperation.m
+END
+AFURLResponseSerialization.h
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/General/3rd/AFNetworking/AFNetworking/AFURLResponseSerialization.h
+END

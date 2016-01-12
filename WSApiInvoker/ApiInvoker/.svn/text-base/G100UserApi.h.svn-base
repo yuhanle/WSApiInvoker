@@ -1,0 +1,291 @@
+//
+//  G100UserApi.h
+//  G100
+//
+//  Created by Tilink on 15/5/8.
+//  Copyright (c) 2015年 Tilink. All rights reserved.
+//
+
+#import "G100Api.h"
+
+@interface G100UserApi : G100Api
+
++(instancetype) sharedInstance;
+
+/**
+ *  检查用户token有效性
+ *
+ *  @param token    旧token
+ *  @param devid    手机唯一编号
+ *  @paran callback 接口回调
+ */
+-(void)validateTokenWithToken:(NSString *)token devid:(NSString *)devid callback:(API_CALLBACK)callback;
+
+/**
+ *  用户登录历史查询
+ *
+ *  @param token    旧token
+ *  @param userid   用户id    普通用户必须忽略，管理员必填
+ *  @paran callback 接口回调
+ */
+-(void)userLoginHistoryWithUserid:(NSString *)userid callback:(API_CALLBACK)callback;
+
+/**
+ *  登录
+ *
+ *  @param loginName 用户名
+ *  @param password  密码
+ *  @param partner  三方登录途径
+ *  @param partneraccount   三方账户
+ *  @param partneraccounttoken  三方账户临时密码
+ *  @param logintrigger 登录方式触发  0 用户触发  1 APP触发
+ *  @param partneruseruid   三方账户用户id
+ *  @param partnerappid     三方平台对应的appid 0骑卫士应用 1三方平台内部应用 2骑卫士web
+ *  @param callback  接口回调
+ */
+-(void) loginUserWithLoginName:(NSString *)loginName
+                   andPassword:(NSString *)password
+                       puserid:(NSString *)puserid
+                    pchannelid:(NSString *)pchannelid
+                       partner:(NSString *)partner
+                partneraccount:(NSString *)partneraccount
+           partneraccounttoken:(NSString *)partneraccounttoken
+                partneruseruid:(NSString *)partneruseruid
+                  logintrigger:(NSInteger)logintrigger
+                      callback:(API_CALLBACK)callback;
+/**
+ *  上传push
+ *
+ *  @param puserid     用户id
+ *  @param pchannelid  渠道id
+ *  @param pushchannel 推送渠道
+ *  @param devid       默认系统信息
+ *  @param callback    接口回调
+ */
+-(void) pushRemoteNotificationInstallWithPuserid:(NSString *)puserid
+                                   andPchannelid:(NSString *)pchannelid
+                                     pushchannel:(NSString *)pushchannel
+                                        callback:(API_CALLBACK)callback;
+
+/**
+ *  退出登录
+ *
+ *  @param callback 接口回调
+ */
+-(void) logoutWithCallback:(API_CALLBACK)callback;
+
+/**
+ *  注册用户
+ *
+ *  @param mobile   手机号码
+ *  @param password 密码
+ *  @param vcode    验证码
+ *  @param partner  三方登录途径
+ *  @param partneraccount   三方账户
+ *  @param partneraccounttoken  三方账户临时密码
+ *  @param partneruseruid   三方账户用户id
+ *  @param partnerappid     三方平台对应的appid 0骑卫士应用 1三方平台内部应用 2骑卫士web
+ *  @param callback 接口回调
+ */
+-(void)registerUserWithMobile:(NSString *)mobile
+                      password:(NSString *)password
+                         vcode:(NSString *)vcode
+                       partner:(NSString *)partner
+                partneraccount:(NSString *)partneraccount
+           partneraccounttoken:(NSString *)partneraccounttoken
+                partneruseruid:(NSString *)partneruseruid
+                      callback:(API_CALLBACK)callback;
+
+/**
+ *  检查三方账户是否已注册过
+ *  
+ *  @param partner              三方登录途径
+ *  @param partneraccount       三方账户
+ *  @param partneraccounttoken  三方账户临时密码
+ *  @param partneruseruid   三方账户用户id
+ *  @param callback             接口回调
+ */
+-(void)checkThirdAccountWithpPartner:(NSString *)partner
+                      partneraccount:(NSString *)partneraccount
+                 partneraccounttoken:(NSString *)partneraccounttoken
+                      partneruseruid:(NSString *)partneruseruid
+                            callback:(API_CALLBACK)callback;
+/**
+ *  检查手机号是否绑定登录渠道
+ *  
+ *  @param  partner 三方登录途径
+ *  @param  pn      三方账户
+ *  @param  callback    接口回调
+ */
+
+-(void)checkPhoneNumIsBindtWithpPartner:(NSString *)partner
+                                     pn:(NSString *)pn
+                               callback:(API_CALLBACK)callback;
+
+/**
+ *  获取用户的第三方账户关系 （token即可）
+ *  
+ *  @param  callback    接口回调
+ */
+-(void)getPartnerRelationWithCallback:(API_CALLBACK)callback;
+
+/**
+ *  用户解除与第三方账户的关系
+ *
+ *  @param  partner         三方登录类型
+ *  @param  partnerAccount  三方登录账号
+ *  @param  callback        接口回调
+ */
+-(void)unbindPartnerRelationWithPartner:(NSString *)partner
+                         partnerAccount:(NSString *)partnerAccount
+                               callback:(API_CALLBACK)callback;
+
+/**
+ *  用户绑定三方账户关系
+ *
+ *  @param partner              三方登录途径
+ *  @param partneraccount       三方账户
+ *  @param partneraccounttoken  三方账户临时密码
+ *  @param partneruseruid       三方账户用户id
+ *  @param partnerappid         三方平台对应的appid 0骑卫士应用 1三方平台内部应用 2骑卫士web
+ *  @param callback             接口回调
+ */
+-(void)bindPartnerRelationPartner:(NSString *)partner
+                   partneraccount:(NSString *)partneraccount
+              partneraccounttoken:(NSString *)partneraccounttoken
+                   partneruseruid:(NSString *)partneruseruid
+                         callback:(API_CALLBACK)callback;
+
+/**
+ *  检查手机号是否注册
+ *
+ *  @param  mobile   手机号码
+ *  @param  callback 接口回调
+ */
+-(void) checkPhoneNumberisRegisterWithMobile:(NSString *)mobile callback:(API_CALLBACK)callback;
+
+/**
+ *  请求短信验证码
+ *  
+ *  @param  mobile   手机号码
+ *  @param  callback 接口回调
+ */
+-(void) requestSmsVerificationWithMobile:(NSString *)mobile callback:(API_CALLBACK)callback;
+
+/**
+ *  核对验证码
+ *
+ *  @param  mobile   手机号码
+ *  @param  vcode    验证码
+ *  @param  callback 接口回调
+ */
+-(void) checkVerificationCodeWithMobile:(NSString *)mobile
+                                  vcode:(NSString *)vcode
+                               callback:(API_CALLBACK)callback;
+
+/**
+ *  查询用户信息
+ *  
+ *  @param  userid   用户id数组
+ *  @param  callback 接口回调
+ */
+-(void) queryUserinfoWithUserid:(NSArray *)userid callback:(API_CALLBACK)callback;
+
+/**
+ *  查询特定用户的各种保险信息
+ *
+ *  @param  userid      用户id    可选  管理员使用 用户忽略
+ *  @param  callback    接口回调
+ */
+-(void)queryInsuranceStatusWithUserid:(NSString *)userid callback:(API_CALLBACK)callback;
+
+/**
+ *  更新用户资料
+ *
+ *  @param  userinfo    用户信息    字典形式
+ *  @param  callback    接口回调
+ */
+-(void) updateUserdataWithUserinfo:(NSDictionary *)userinfo callback:(API_CALLBACK)callback;
+
+/**
+ *  修改用户密码
+ *  
+ *  @param  currpwd  旧密码
+ *  @param  newpwd   新密码
+ *  @param  callback 接口回调
+ */
+
+-(void) modifyUserPasswordWithCurrpwd:(NSString *)currpwd
+                               newpwd:(NSString *)newpwd
+                             callback:(API_CALLBACK)callback;
+
+/**
+ *  重置用户密码
+ *
+ *  @param  mobile   手机号
+ *  @param  vcode    验证码
+ *  @param  newpwd   新密码
+ *  @param  callback 接口回调
+ */
+-(void)resetUserPasswordWithMobile:(NSString *)mobile
+                             vcode:(NSString *)vcode
+                            newpwd:(NSString *)newpwd
+                          callback:(API_CALLBACK)callback;
+
+/**
+ *  修改手机号码
+ *
+ *  @param  oldvc    旧验证码
+ *  @param  newpn    新手机号
+ *  @param  newvc    新验证码
+ *  @param  callback 接口回调
+ */
+-(void)modifyMobileNumberWithOldvc:(NSString *)oldvc
+                            newpn:(NSString *)newpn
+                            newvc:(NSString *)newvc
+                         callback:(API_CALLBACK)callback;
+
+/**
+ *  检查软件版本  从官网
+ *  
+ *  @param  platform    平台  A android I ios
+ *  @param  channel     渠道：0 通用版 1 某某专用版 2 ...
+ *  @param  version     版本号
+ *  @param  callback    接口对调
+ */
+-(void)checkUpdateWithPlatform:(NSString *)platform
+                       channel:(NSString *)channel
+                       version:(NSString *)version
+                      callback:(API_CALLBACK)callback;
+
+/**
+ *  获取页面提示信息
+ *
+ *  @param page     页面名称
+ *  @param channel  渠道
+ *  @param callback 接口回调
+ */
+-(void)getPagePromptInfoWithPage:(NSString *)page
+                         channel:(NSString *)channel
+                        callback:(API_CALLBACK)callback;
+
+/**
+ *  获取app启动页面
+ *
+ *  @param devid    手机唯一id
+ *  @param devname  手机型号
+ *  @param devos    手机系统版本
+ *  @param location 定位位置
+ *  @param callback 接口回调
+ */
+- (void)getStartupPageWithLocation:(NSString *)location callback:(API_CALLBACK)callback;
+
+/**
+ *  上传用户的位置信息
+ *
+ *  @param location 用户位置信息 字典形式
+ *  @param callback 接口回调
+ */
+- (void)uploadUserlocationWithLocation:(NSDictionary *)location callback:(API_CALLBACK)callback;
+
+@end

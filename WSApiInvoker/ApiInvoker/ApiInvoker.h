@@ -1,0 +1,40 @@
+//
+//  WS
+//
+//  Created by yuhanle on 15/5/8.
+//  Copyright (c) 2015年 yuhanle. All rights reserved.
+//
+
+
+#import <Foundation/Foundation.h>
+#import "AFWSApiInvoker.h"
+#import "ApiResponse.h"
+#import "ApiRequest.h"
+
+@interface ApiInvoker : NSObject
+
+@property (nonatomic, copy) NSString *token;    //!< token
+@property (nonatomic, copy) NSString *apiBaseUrl;   //!< 接口地址
+@property (nonatomic, copy) NSString *apiHttpsBaseUrl;  //!< https接口地址
+@property (nonatomic, assign) NSUInteger timeoutInSeconds; //!< 请求超时秒数，默认为30s
+
+- (void)postApi:(NSString *)api andRequest:(ApiRequest *)apiRequest callback:(API_CALLBACK)callback;
+
+//请求API
+- (void)requestApi:(NSString *)api withMethod:(NSString *)httpMethod andRequest:(ApiRequest *)apiRequest callback:(API_CALLBACK)callback;
+//公共的处理错误信息
+- (void)handleError:(NSInteger)statusCode response:(ApiResponse *)apiResponse;
+- (void)handleError:(NSInteger)statusCode apiRequest:(ApiRequest *)apiRequest response:(ApiResponse *)apiResponse;
+
+- (void)addRequest:(ApiRequest *)apiRequest;
+
+- (void)removeAllRequest;
+- (void)removeRequest:(ApiRequest *)apiRequest;
+
+- (void)cancellAllRequest;
+- (void)cancellAllRequestExcept:(ApiRequest *)apiRequest;
+
+- (void)reRequest:(ApiRequest *)apiRequest;
+- (void)reRequestAllRequest;
+
+@end

@@ -1,0 +1,297 @@
+//
+//  G100UserApi.m
+//  G100
+//
+//  Created by Tilink on 15/5/8.
+//  Copyright (c) 2015年 Tilink. All rights reserved.
+//
+
+#import "G100UserApi.h"
+
+@implementation G100UserApi
+
++(instancetype) sharedInstance {
+    static G100UserApi *instance;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        instance = [[self alloc]init];
+    });
+    return instance;
+}
+
+-(void)validateTokenWithToken:(NSString *)token devid:(NSString *)devid callback:(API_CALLBACK)callback {
+    ApiRequest *request = [ApiRequest requestWithBizData:@{@"token" : EMPTY_IF_NIL(token), @"devid" : EMPTY_IF_NIL(devid)}];
+    [self postApi:@"app/validatetoken" andRequest:request token:NO callback:callback];
+}
+-(void)userLoginHistoryWithUserid:(NSString *)userid callback:(API_CALLBACK)callback {
+    ApiRequest *request = [ApiRequest requestWithBizData:@{@"userid" : EMPTY_IF_NIL(userid)}];
+    [self postApi:@"app/userloginhis" andRequest:request token:YES callback:callback];
+}
+-(void)loginUserWithLoginName:(NSString *)loginName
+                  andPassword:(NSString *)password
+                      puserid:(NSString *)puserid
+                   pchannelid:(NSString *)pchannelid
+                      partner:(NSString *)partner
+               partneraccount:(NSString *)partneraccount
+          partneraccounttoken:(NSString *)partneraccounttoken
+               partneruseruid:(NSString *)partneruseruid
+                 logintrigger:(NSInteger)logintrigger
+                     callback:(API_CALLBACK)callback {
+    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+    NSString *app_Version = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
+    ApiRequest *request = [ApiRequest requestWithBizData:@{
+                                                           @"pn" : EMPTY_IF_NIL(loginName),
+                                                           @"pw" : EMPTY_IF_NIL(password),
+                                                           @"devid" : EMPTY_IF_NIL(DeviceAndOSInfo),
+                                                           @"channel" : ISInHouse ? @"SALE_A001" : @"APPS_A001",
+                                                           @"appversion" : EMPTY_IF_NIL(app_Version),
+                                                           @"partner" : EMPTY_IF_NIL(partner),
+                                                           @"partneraccount" : EMPTY_IF_NIL(partneraccount),
+                                                           @"partneraccounttoken" : EMPTY_IF_NIL(partneraccounttoken),
+                                                           @"puserid" : EMPTY_IF_NIL(puserid),
+                                                           @"pchannelid" : EMPTY_IF_NIL(pchannelid),
+                                                           @"accesstype" : @"APP",
+                                                           @"logintrigger" : [NSNumber numberWithInteger:logintrigger],
+                                                           @"partneruseruid" : EMPTY_IF_NIL(partneruseruid),
+                                                           @"partnerappid" : [NSNumber numberWithInteger:0]
+                                                           }];
+    
+    [self postApi:@"app/login" andRequest:request token:NO https:YES callback:callback];
+}
+
+-(void)pushRemoteNotificationInstallWithPuserid:(NSString *)puserid
+                                  andPchannelid:(NSString *)pchannelid
+                                    pushchannel:(NSString *)pushchannel
+                                       callback:(API_CALLBACK)callback {
+    ApiRequest *request = [ApiRequest requestWithBizData:@{
+                                                           @"puserid" : EMPTY_IF_NIL(puserid),
+                                                           @"pchannelid" : EMPTY_IF_NIL(pchannelid),
+                                                           @"pushchannel" : EMPTY_IF_NIL(pushchannel),
+                                                           @"devid" : EMPTY_IF_NIL(DeviceAndOSInfo)}];
+    [self postApi:@"app/postpush" andRequest:request callback:callback];
+}
+
+-(void)logoutWithCallback:(API_CALLBACK)callback{
+    ApiRequest *request = [ApiRequest requestWithBizData:@{@"devid" : EMPTY_IF_NIL(DeviceAndOSInfo)}];
+    [self postApi:@"app/logout" andRequest:request callback:callback];
+}
+
+-(void)registerUserWithMobile:(NSString *)mobile
+                     password:(NSString *)password
+                        vcode:(NSString *)vcode
+                      partner:(NSString *)partner
+               partneraccount:(NSString *)partneraccount
+          partneraccounttoken:(NSString *)partneraccounttoken
+               partneruseruid:(NSString *)partneruseruid
+                     callback:(API_CALLBACK)callback {
+    ApiRequest *request = [ApiRequest requestWithBizData:@{
+                                                           @"pn" : EMPTY_IF_NIL(mobile),
+                                                           @"pw" : EMPTY_IF_NIL(password),
+                                                           @"vc" : EMPTY_IF_NIL(vcode),
+                                                           @"devid" : EMPTY_IF_NIL(DeviceAndOSInfo),
+                                                           @"partner" : EMPTY_IF_NIL(partner),
+                                                           @"partneraccount" : EMPTY_IF_NIL(partneraccount),
+                                                           @"partneraccounttoken" : EMPTY_IF_NIL(partneraccounttoken),
+                                                           @"partneruseruid" : EMPTY_IF_NIL(partneruseruid),
+                                                           @"partnerappid" : [NSNumber numberWithInt:0]
+                                                           }];
+    [self postApi:@"app/register" andRequest:request token:NO https:YES callback:callback];
+}
+
+-(void)checkThirdAccountWithpPartner:(NSString *)partner
+                      partneraccount:(NSString *)partneraccount
+                 partneraccounttoken:(NSString *)partneraccounttoken
+                      partneruseruid:(NSString *)partneruseruid
+                            callback:(API_CALLBACK)callback {
+    ApiRequest *request = [ApiRequest requestWithBizData:@{
+                                                           @"partner" : EMPTY_IF_NIL(partner),
+                                                           @"partneraccount" : EMPTY_IF_NIL(partneraccount),
+                                                           @"partneraccounttoken" : EMPTY_IF_NIL(partneraccounttoken),
+                                                           @"partneruseruid" : EMPTY_IF_NIL(partneruseruid)
+                                                           }];
+    [self postApi:@"app/checktpa" andRequest:request token:NO callback:callback];
+}
+
+/**
+ *  检查手机号是否绑定登录渠道
+ *
+ *  @param  partner 三方登录途径
+ *  @param  pn      三方账户
+ *  @param  callback    接口回调
+ */
+
+-(void)checkPhoneNumIsBindtWithpPartner:(NSString *)partner
+                                     pn:(NSString *)pn
+                               callback:(API_CALLBACK)callback {
+    ApiRequest *request = [ApiRequest requestWithBizData:@{
+                                                           @"partner" : EMPTY_IF_NIL(partner),
+                                                           @"pn" : EMPTY_IF_NIL(pn),
+                                                           }];
+    [self postApi:@"app/checkphonetp" andRequest:request token:NO callback:callback];
+}
+
+/**
+ *  获取用户的第三方账户关系 （token即可）
+ *
+ *  @param  callback    接口回调
+ */
+-(void)getPartnerRelationWithCallback:(API_CALLBACK)callback {
+    ApiRequest *request = [ApiRequest requestWithBizData:nil];
+    [self postApi:@"app/getpartnerrelation" andRequest:request callback:callback];
+}
+
+/**
+ *  用户解除与第三方账户的关系
+ *
+ *  @param  partner         三方登录类型
+ *  @param  partnerAccount  三方登录账号
+ *  @param  callback        接口回调
+ */
+-(void)unbindPartnerRelationWithPartner:(NSString *)partner
+                         partnerAccount:(NSString *)partnerAccount
+                               callback:(API_CALLBACK)callback {
+    ApiRequest *request = [ApiRequest requestWithBizData:@{
+                                                           @"partner" : EMPTY_IF_NIL(partner),
+                                                           @"partnerAccount" : EMPTY_IF_NIL(partnerAccount)
+                                                           }];
+    [self postApi:@"app/unbindpartnerrelation" andRequest:request callback:callback];
+}
+
+/**
+ *  用户绑定三方账户关系
+ *
+ *  @param partner              三方登录途径
+ *  @param partneraccount       三方账户
+ *  @param partneraccounttoken  三方账户临时密码
+ *  @param callback             接口回调
+ */
+-(void)bindPartnerRelationPartner:(NSString *)partner
+                   partneraccount:(NSString *)partneraccount
+              partneraccounttoken:(NSString *)partneraccounttoken
+                   partneruseruid:(NSString *)partneruseruid
+                         callback:(API_CALLBACK)callback {
+    ApiRequest *request = [ApiRequest requestWithBizData:@{
+                                                           @"partner" : EMPTY_IF_NIL(partner),
+                                                           @"partneraccount" : EMPTY_IF_NIL(partneraccount),
+                                                           @"partneraccounttoken" : EMPTY_IF_NIL(partneraccounttoken),
+                                                           @"partneruseruid" : EMPTY_IF_NIL(partneruseruid),
+                                                           @"partnerappid" : [NSNumber numberWithInteger:0]
+                                                           }];
+    [self postApi:@"app/bindpartnerrelation" andRequest:request callback:callback];
+}
+
+-(void)checkPhoneNumberisRegisterWithMobile:(NSString *)mobile callback:(API_CALLBACK)callback {
+    ApiRequest *request = [ApiRequest requestWithBizData:@{@"pn" : EMPTY_IF_NIL(mobile)}];
+    [self postApi:@"app/checkpn" andRequest:request callback:callback];
+}
+
+-(void)requestSmsVerificationWithMobile:(NSString *)mobile callback:(API_CALLBACK)callback {
+    ApiRequest *request = [ApiRequest requestWithBizData:@{@"pn" : EMPTY_IF_NIL(mobile)}];
+    [self postApi:@"app/requestvc" andRequest:request callback:callback];
+}
+
+-(void)checkVerificationCodeWithMobile:(NSString *)mobile
+                                vcode:(NSString *)vcode
+                             callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{
+                                                            @"pn" : EMPTY_IF_NIL(mobile),
+                                                            @"vc" : EMPTY_IF_NIL(vcode)
+                                                            }];
+    [self postApi:@"app/validatevc" andRequest:request token:NO callback:callback];
+}
+
+-(void)queryUserinfoWithUserid:(NSArray *)userid callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{@"userid" : EMPTY_IF_NIL(userid)}];
+    [self postApi:@"app/getuserinfo" andRequest:request callback:callback];
+}
+
+-(void)queryInsuranceStatusWithUserid:(NSString *)userid callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{@"userid" : EMPTY_IF_NIL(userid)}];
+    [self postApi:@"app/insurancestatus" andRequest:request callback:callback];
+}
+
+-(void)updateUserdataWithUserinfo:(NSDictionary *)userinfo callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:userinfo];
+    [self postApi:@"app/updateprofile" andRequest:request callback:callback];
+}
+
+-(void)modifyUserPasswordWithCurrpwd:(NSString *)currpwd
+                              newpwd:(NSString *)newpwd
+                            callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{
+                                                            @"currpwd" : EMPTY_IF_NIL(currpwd),
+                                                            @"newpwd" : EMPTY_IF_NIL(newpwd)
+                                                            }];
+    [self postApi:@"app/changepassword" andRequest:request token:YES https:YES callback:callback];
+}
+
+-(void)resetUserPasswordWithMobile:(NSString *)mobile
+                             vcode:(NSString *)vcode
+                            newpwd:(NSString *)newpwd
+                          callback:(API_CALLBACK)callback{
+    ApiRequest * request = [ApiRequest requestWithBizData:@{
+                                                            @"pn" : EMPTY_IF_NIL(mobile),
+                                                            @"vc" : EMPTY_IF_NIL(vcode),
+                                                            @"newpwd" : EMPTY_IF_NIL(newpwd)
+                                                            }];
+    [self postApi:@"app/resetpassword" andRequest:request token:YES https:YES callback:callback];
+}
+
+-(void)modifyMobileNumberWithOldvc:(NSString *)oldvc
+                             newpn:(NSString *)newpn
+                             newvc:(NSString *)newvc
+                          callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{
+                                                            @"oldvc" : EMPTY_IF_NIL(oldvc),
+                                                            @"newpn" : EMPTY_IF_NIL(newpn),
+                                                            @"newvc" : EMPTY_IF_NIL(newvc)
+                                                            }];
+    [self postApi:@"app/changephone" andRequest:request callback:callback];
+}
+
+-(void)checkUpdateWithPlatform:(NSString *)platform
+                       channel:(NSString *)channel
+                       version:(NSString *)version
+                      callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{
+                                                            @"platform" : EMPTY_IF_NIL(platform),
+                                                            @"channel" : EMPTY_IF_NIL(channel),
+                                                            @"version" : EMPTY_IF_NIL(version)
+                                                            }];
+    [self postApi:@"app/checkupdate" andRequest:request callback:callback];
+}
+
+-(void)getPagePromptInfoWithPage:(NSString *)page
+                         channel:(NSString *)channel
+                        callback:(API_CALLBACK)callback {
+    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+    NSString *version = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
+    ApiRequest * request = [ApiRequest requestWithBizData:@{
+                                                            @"platform" : @"I",
+                                                            @"page" : EMPTY_IF_NIL(page),
+                                                            @"channel" : EMPTY_IF_NIL(channel),
+                                                            @"version" : EMPTY_IF_NIL(version)
+                                                            }];
+    [self postApi:@"app/getpageprompt" andRequest:request callback:callback];
+}
+
+- (void)getStartupPageWithLocation:(NSString *)location callback:(API_CALLBACK)callback {
+    ApiRequest *request = [ApiRequest requestWithBizData:@{
+                                                           @"devid" : EMPTY_IF_NIL(DeviceAndOSInfo),
+                                                           @"devname" : EMPTY_IF_NIL([DeviceManager platform]),
+                                                           @"devos" : EMPTY_IF_NIL([DeviceManager osInfo]),
+                                                           @"channel" : ISInHouse ? @"SALE_A001" : @"APPS_A001",
+                                                           @"locatino" : EMPTY_IF_NIL(location)
+                                                           }];
+    [self postApi:@"app/startuppage" andRequest:request token:NO callback:callback];
+}
+
+- (void)uploadUserlocationWithLocation:(NSDictionary *)location callback:(API_CALLBACK)callback {
+    ApiRequest *request = [ApiRequest requestWithBizData:@{
+                                                           @"devid" : EMPTY_IF_NIL(DeviceAndOSInfo),
+                                                           @"location" : EMPTY_IF_NIL(location)
+                                                           }];
+    [self postApi:@"app/userlocation" andRequest:request callback:callback];
+}
+
+@end

@@ -1,0 +1,271 @@
+//
+//  WS
+//
+//  Created by yuhanle on 15/5/8.
+//  Copyright (c) 2015年 yuhanle. All rights reserved.
+//
+
+#import "AFHTTPRequestOperationManager.h"
+#import "AFWSApiInvoker.h"
+#import "ApiResponse.h"
+#import "WSMacros.h"
+
+@interface AFWSApiInvoker ()
+@property(nonatomic, strong) AFHTTPRequestOperationManager *requestOperationManager; //!< 正常请求
+@property(nonatomic, strong) AFHTTPRequestOperationManager *requestHttpsOperationManager; //!< https认证请求
+@property(nonatomic, strong) NSString *baseUrl;
+@property(nonatomic, strong) NSString *baseHttpsUrl;
+@end
+
+@implementation AFWSApiInvoker
+- (NSMutableArray *)apiRequestArray {
+    if (_apiRequestArray == nil) {
+        self.apiRequestArray = [[NSMutableArray alloc]init];
+    }
+    
+    return _apiRequestArray;
+}
+
+- (void)addRequest:(ApiRequest *)apiRequest {
+    if (![self.apiRequestArray containsObject:apiRequest]) {
+        apiRequest.retryCount = 0;
+        [self.apiRequestArray addObject:apiRequest];
+    }else {
+        apiRequest.retryCount++;
+    }
+}
+
+- (void)removeAllRequest {
+    for (NSInteger i = 0; i < [self.apiRequestArray count]; i++) {
+        ApiRequest * apiRequest = [self.apiRequestArray objectAtIndex:i];
+        [self removeRequest:apiRequest normal:NO];
+    }
+}
+
+- (void)removeRequest:(ApiRequest *)apiRequest normal:(BOOL)normal {
+    if (![self.apiRequestArray containsObject:apiRequest]) {
+        NSLog(@"not exist the request");
+    }else {
+        if (normal) {
+            
+        }else {
+            API_CALLBACK callback = apiRequest.callback;
+            if (callback) {
+                callback(0, nil, NO);
+            }
+        }
+        
+        [self.apiRequestArray removeObject:apiRequest];
+    }
+}
+
+- (void)request:(NSURLRequest *)request apiRequest:(ApiRequest *)apiRequest callback:(API_CALLBACK)callback {
+    [self addRequest:apiRequest];
+    __weak AFWSApiInvoker *weakSelf = self;
+    AFHTTPRequestOperationManager * requestManager = apiRequest.isHttps ? self.requestHttpsOperationManager : self.requestOperationManager;
+    AFHTTPRequestOperation *operation = [requestManager HTTPRequestOperationWithRequest:request
+                                                                                              success:^(AFHTTPRequestOperation *requestOperation, id responseObj){
+                      [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                      responseObj = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
+                      responseObj = AFJSONObjectByRemovingKeysWithNullValues(responseObj, NSJSONReadingMutableContainers);
+                      
+                      DLog(@"OK, request %@ response is %@", requestOperation.request, responseObj);
+                      
+                      if (callback) {
+                          ApiResponse *apiResponse = nil;
+                          @try {
+                              apiResponse = [[ApiResponse alloc] initWithDictionary:responseObj];
+                              if (!apiResponse.success && [weakSelf.delegate respondsToSelector:@selector(handleError:apiRequest:response:)]) {
+                                  [weakSelf.delegate handleError:requestOperation.response.statusCode apiRequest:apiRequest response:apiResponse];
+                              }
+                              
+                              if (apiResponse.errCode != 6 || apiRequest.retryCount > 3) {
+                                  [weakSelf removeRequest:apiRequest normal:YES];
+                                  callback(requestOperation.response.statusCode, apiResponse, apiResponse.success);
+                              }
+                          }
+                          @catch (NSException *exception) {
+                              DLog(@"Exception occurred: %@, %@", exception, [exception userInfo]);
+                              id <AFWSApiInvokerDelegate> o = weakSelf.delegate;
+                              if ([o respondsToSelector:@selector(handleError:apiRequest:response:)]) {
+                                  [o handleError:requestOperation.response.statusCode apiRequest:apiRequest response:apiResponse];
+                              }
+                              if (callback) {
+                                  callback(0, nil, NO);
+                              }
+                              
+                              [weakSelf removeRequest:apiRequest normal:YES];
+                          }
+                          
+                      }
+                  }
+                                                                                              failure:^(AFHTTPRequestOperation *requestOperation, NSError *error){
+                  [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                  DLog(@"ERROR! request %@ statusCode is %li, \n\r%@",requestOperation.request, (long)requestOperation.response.statusCode, error);
+                  id <AFWSApiInvokerDelegate> o = weakSelf.delegate;
+                  if ([o respondsToSelector:@selector(handleError:apiRequest:response:)]) {
+                      [o handleError:error.code apiRequest:apiRequest response:nil];
+                  }
+                  if (callback) {
+                      callback(requestOperation.response.statusCode, nil, NO);
+                  }
+                                                                                                  
+                  [weakSelf removeRequest:apiRequest normal:YES];
+              }];
+    
+    apiRequest.operation = operation;
+    [requestManager.operationQueue addOperation:operation];
+}
+
+- (void)request:(NSURLRequest *)request callback:(API_CALLBACK)callback {
+	__weak AFWSApiInvoker *weakSelf = self;
+	AFHTTPRequestOperation *operation = [self.requestOperationManager HTTPRequestOperationWithRequest:request
+																							  success:^(AFHTTPRequestOperation *requestOperation, id responseObj){
+				[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                responseObj = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
+                responseObj = AFJSONObjectByRemovingKeysWithNullValues(responseObj, NSJSONReadingMutableContainers);
+                                                                                                  
+				DLog(@"OK, request %@ response is %@", requestOperation.request, responseObj);
+                                                                                                  
+				if (callback) {
+					ApiResponse *apiResponse = nil;
+					@try {
+						apiResponse = [[ApiResponse alloc] initWithDictionary:responseObj];
+						if (!apiResponse.success && [weakSelf.delegate respondsToSelector:@selector(handleError:response:)]) {
+							[weakSelf.delegate handleError:requestOperation.response.statusCode response:apiResponse];
+						}
+                        
+                        callback(requestOperation.response.statusCode, apiResponse, apiResponse.success);
+					}
+					@catch (NSException *exception) {
+						DLog(@"Exception occurred: %@, %@", exception, [exception userInfo]);
+						id <AFWSApiInvokerDelegate> o = weakSelf.delegate;
+						if ([o respondsToSelector:@selector(handleError:response:)]) {
+							[o handleError:requestOperation.response.statusCode response:apiResponse];
+						}
+						if (callback) {
+							callback(0, nil, NO);
+						}
+					}
+
+				}
+			}
+																							  failure:^(AFHTTPRequestOperation *requestOperation, NSError *error){
+				[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+				DLog(@"ERROR! request %@ statusCode is %li, \n\r%@",requestOperation.request, (long)requestOperation.response.statusCode, error);
+				id <AFWSApiInvokerDelegate> o = weakSelf.delegate;
+				if ([o respondsToSelector:@selector(handleError:response:)]) {
+					[o handleError:error.code response:nil];
+				}
+				if (callback) {
+					callback(requestOperation.response.statusCode, nil, NO);
+				}
+			}];
+    
+	[self.requestOperationManager.operationQueue addOperation:operation];    
+}
+
++ (id)apiInvokerWithBaseUrl:(NSString *)baseUrl {
+    static AFWSApiInvoker * invoker;
+    static dispatch_once_t oneToken;
+    dispatch_once(&oneToken, ^{
+        invoker = [[self alloc]init];
+    });
+
+    invoker.baseUrl = baseUrl;
+    assert(invoker.baseUrl);
+    invoker.requestOperationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:invoker.baseUrl]];
+    [invoker.requestOperationManager.operationQueue setMaxConcurrentOperationCount:3];
+    
+    invoker.requestOperationManager.requestSerializer = [AFJSONRequestSerializer serializer];
+    invoker.requestOperationManager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    
+	return invoker;
+}
+
++ (id)apiHttpsInvokerWithBaseUrl:(NSString *)baseUrl {
+    static AFWSApiInvoker * invoker;
+    static dispatch_once_t oneToken;
+    dispatch_once(&oneToken, ^{
+        invoker = [[self alloc]init];
+    });
+    
+    invoker.baseHttpsUrl = baseUrl;
+    assert(invoker.baseHttpsUrl);
+    invoker.requestHttpsOperationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:invoker.baseHttpsUrl]];
+    [invoker.requestHttpsOperationManager.operationQueue setMaxConcurrentOperationCount:3];
+    
+    invoker.requestHttpsOperationManager.requestSerializer = [AFJSONRequestSerializer serializer];
+    invoker.requestHttpsOperationManager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    
+    [invoker.requestHttpsOperationManager setSecurityPolicy:[self customSecurityPolicy]];
+    
+    return invoker;
+}
+
+- (void)cancellAllRequest {
+    [self.requestOperationManager.operationQueue cancelAllOperations];
+    [self.requestHttpsOperationManager.operationQueue cancelAllOperations];
+}
+
+- (void)cancellAllRequestExcept:(ApiRequest *)apiRequest {
+    AFHTTPRequestOperationManager * requestManager = apiRequest.isHttps ? self.requestHttpsOperationManager : self.requestOperationManager;
+    for (NSInteger i = 0; i < [[requestManager.operationQueue operations] count]; i++) {
+        AFHTTPRequestOperation * op = [requestManager.operationQueue operations][i];
+        if (op != apiRequest.operation) {
+            [op cancel];
+        }
+    }
+}
+
+#pragma mark - https认证
++ (AFSecurityPolicy*)customSecurityPolicy
+{
+    // /先导入证书
+    NSString *cerPath = [[NSBundle mainBundle] pathForResource:@"xxx" ofType:@"cer"]; //证书的路径
+    NSData *certData = [NSData dataWithContentsOfFile:cerPath];
+    
+    // AFSSLPinningModeCertificate 使用证书验证模式
+    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    
+    // allowInvalidCertificates 是否允许无效证书（也就是自建的证书），默认为NO
+    // 如果是需要验证自建证书，需要设置为YES
+    securityPolicy.allowInvalidCertificates = YES;
+    
+    //validatesDomainName 是否需要验证域名，默认为YES；
+    //假如证书的域名与你请求的域名不一致，需把该项设置为NO；如设成NO的话，即服务器使用其他可信任机构颁发的证书，也可以建立连接，这个非常危险，建议打开。
+    //置为NO，主要用于这种情况：客户端请求的是子域名，而证书上的是另外一个域名。因为SSL证书上的域名是独立的，假如证书上注册的域名是www.google.com，那么mail.google.com是无法验证通过的；当然，有钱可以注册通配符的域名*.google.com，但这个还是比较贵的。
+    //如置为NO，建议自己添加对应域名的校验逻辑。
+    securityPolicy.validatesDomainName = YES;
+    
+    securityPolicy.pinnedCertificates = @[certData];
+    
+    return securityPolicy;
+}
+
+static id AFJSONObjectByRemovingKeysWithNullValues(id JSONObject, NSJSONReadingOptions readingOptions) {
+    if ([JSONObject isKindOfClass:[NSArray class]]) {
+        NSMutableArray *mutableArray = [NSMutableArray arrayWithCapacity:[(NSArray *)JSONObject count]];
+        for (id value in (NSArray *)JSONObject) {
+            [mutableArray addObject:AFJSONObjectByRemovingKeysWithNullValues(value, readingOptions)];
+        }
+        
+        return (readingOptions & NSJSONReadingMutableContainers) ? mutableArray : [NSArray arrayWithArray:mutableArray];
+    } else if ([JSONObject isKindOfClass:[NSDictionary class]]) {
+        NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:JSONObject];
+        for (id <NSCopying> key in [(NSDictionary *)JSONObject allKeys]) {
+            id value = [(NSDictionary *)JSONObject objectForKey:key];
+            if (!value || [value isEqual:[NSNull null]]) {
+                [mutableDictionary removeObjectForKey:key];
+            } else if ([value isKindOfClass:[NSArray class]] || [value isKindOfClass:[NSDictionary class]]) {
+                [mutableDictionary setObject:AFJSONObjectByRemovingKeysWithNullValues(value, readingOptions) forKey:key];
+            }
+        }
+        
+        return (readingOptions & NSJSONReadingMutableContainers) ? mutableDictionary : [NSDictionary dictionaryWithDictionary:mutableDictionary];
+    }
+    
+    return JSONObject;
+}
+
+@end

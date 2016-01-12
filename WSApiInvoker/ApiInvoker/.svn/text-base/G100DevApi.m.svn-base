@@ -1,0 +1,245 @@
+//
+//  G100DevApi.m
+//  G100
+//
+//  Created by Tilink on 15/5/8.
+//  Copyright (c) 2015年 Tilink. All rights reserved.
+//
+
+#import "G100DevApi.h"
+
+@implementation G100DevApi
+
++(instancetype)sharedInstance {
+    static G100DevApi * instance;
+    static dispatch_once_t oneToken;
+    dispatch_once(&oneToken, ^{
+        instance = [[self alloc]init];
+    });
+    return instance;
+}
+
+-(void)loadCurrentUserDevlistWithCallback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:nil];
+    [self postApi:@"app/getdevlist" andRequest:request callback:callback];
+}
+
+-(void)loadCurrentUserDevlistWithDevid:(NSArray *)devid callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{@"devid" : EMPTY_IF_NIL(devid)}];
+    [self postApi:@"app/getdevlist" andRequest:request callback:callback];
+}
+
+-(void)getDevCurrentPositionWithDevid:(NSString *)devid callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{@"devid" : EMPTY_IF_NIL(devid)}];
+    [self postApi:@"app/currentlocation" andRequest:request callback:callback];
+}
+
+-(void)getDevDriveSummaryWithDevid:(NSString *)devid
+                               day:(NSString *)day
+                          callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{
+                                                            @"devid" : EMPTY_IF_NIL(devid),
+                                                            @"day" : EMPTY_IF_NIL(day)
+                                                            }];
+    [self postApi:@"app/histracksummary" andRequest:request callback:callback];
+}
+
+-(void)loadDevDayDriveSummaryWithDevid:(NSString *)devid callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{@"devid" : EMPTY_IF_NIL(devid)}];
+    [self postApi:@"app/bikeusagesummarydaily" andRequest:request callback:callback];
+}
+
+-(void)loadDevHistoryTrackWithDevid:(NSString *)devid
+                         begintime:(NSString *)begintime
+                           endtime:(NSString *)endtime
+                          callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{
+                                                            @"devid" : EMPTY_IF_NIL(devid),
+                                                            @"begintime" : EMPTY_IF_NIL(begintime),
+                                                            @"endtime" : EMPTY_IF_NIL(endtime)
+                                                            }];
+    [self postApi:@"app/historytrack" andRequest:request callback:callback];
+}
+
+-(void)getDevCurrentPowerWithDevid:(NSString *)devid callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{@"devid" : EMPTY_IF_NIL(devid)}];
+    [self postApi:@"app/currentbattery" andRequest:request callback:callback];
+}
+
+-(void)bindNewDevWithQRCode:(NSString *)qr callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{@"qr" : EMPTY_IF_NIL(qr)}];
+    [self postApi:@"app/bindeb" andRequest:request callback:callback];
+}
+
+-(void)bindNewDevWithQRCode:(NSString *)qr alertor:(NSInteger)alertor callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{ @"qr" : EMPTY_IF_NIL(qr), @"alertor" : [NSNumber numberWithInteger:alertor] }];
+    [self postApi:@"app/bindeb" andRequest:request callback:callback];
+}
+
+-(void)rebindDevWithDevid:(NSString *)devid callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{@"devid" : EMPTY_IF_NIL(devid)}];
+    [self postApi:@"app/rebindeb" andRequest:request callback:callback];
+}
+
+-(void)checkBindWithDevid:(NSString *)devid callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{@"devid" : EMPTY_IF_NIL(devid)}];
+    [self postApi:@"app/checkbind" andRequest:request callback:callback];
+}
+
+-(void)loadRelativeUserinfoWithDevid:(NSString *)devid callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{@"devid" : EMPTY_IF_NIL(devid)}];
+    [self postApi:@"app/getdevusers" andRequest:request callback:callback];
+}
+
+-(void)modifyDevNameWithDevid:(NSString *)devid
+                         name:(NSString *)name
+                     callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{
+                                                            @"devid" : EMPTY_IF_NIL(devid),
+                                                            @"name" : EMPTY_IF_NIL(name)
+                                                            }];
+    [self postApi:@"app/updatebikename" andRequest:request callback:callback];
+}
+
+-(void)removeDevUserWithDevid:(NSString *)devid
+                       userid:(NSString *)userid
+                     callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{
+                                                            @"devid" : EMPTY_IF_NIL(devid),
+                                                            @"userid" : EMPTY_IF_NIL(userid)
+                                                            }];
+    [self postApi:@"app/rmdevuser" andRequest:request callback:callback];
+}
+
+-(void)removeDevUserSelfWithDevid:(NSString *)devid
+                            vcode:(NSString *)vcode
+                         callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{
+                                                            @"devid" : EMPTY_IF_NIL(devid),
+                                                            @"vc" : EMPTY_IF_NIL(vcode)
+                                                            }];
+    [self postApi:@"app/unbindeb" andRequest:request callback:callback];
+}
+
+-(void)setSecuritySetingWithData:(NSDictionary *)data callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{@"data" : EMPTY_IF_NIL(data)}];
+    [self postApi:@"app/securitysetting" andRequest:request callback:callback];
+}
+
+-(void)loadListDevMsgWithDevid:(NSString *)devid
+                     begintime:(NSString *)begintime
+                       endtime:(NSString *)endtime
+                      callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{
+                                                            @"devid" : EMPTY_IF_NIL(devid),
+                                                            @"begintime" : EMPTY_IF_NIL(begintime),
+                                                            @"endtime" : EMPTY_IF_NIL(endtime)
+                                                            }];
+    [self postApi:@"app/listdevmsg" andRequest:request callback:callback];
+}
+
+-(void)grantDevPrivsWithDevid:(NSString *)devid
+                       userid:(NSInteger)userid
+                        grant:(NSString *)grant
+                        privs:(NSString *)privs
+                     callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{
+                                                            @"devid" : EMPTY_IF_NIL(devid),
+                                                            @"userid" : EMPTY_IF_NIL([NSNumber numberWithInteger:userid]),
+                                                            @"grant" : EMPTY_IF_NIL(grant),
+                                                            @"privs" : EMPTY_IF_NIL(privs)
+                                                            }];
+    [self postApi:@"app/grantdevprivs" andRequest:request callback:callback];
+}
+
+-(void)controllerLockWithDevid:(NSString *)devid
+                          lock:(NSInteger)lock
+                      callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{
+                                                            @"devid" : EMPTY_IF_NIL(devid),
+                                                            @"lock" : EMPTY_IF_NIL([NSNumber numberWithInteger:lock])
+                                                            }];
+    [self postApi:@"app/controllerlock" andRequest:request callback:callback];
+}
+
+-(void)getDevStatusWithDevid:(NSString *)devid callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{@"devid" : EMPTY_IF_NIL(devid)}];
+    [self postApi:@"app/getbikestatus" andRequest:request callback:callback];
+}
+
+-(void)evaluatingDevSafetyScoreWithDevid:(NSString *)devid
+                         securitysetting:(NSInteger)securitysetting
+                                callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{
+                                                            @"devid" : EMPTY_IF_NIL(devid),
+                                                            @"securitysetting" : EMPTY_IF_NIL([NSNumber numberWithInteger:securitysetting])
+                                                            }];
+    [self postApi:@"app/getsecurityscore" andRequest:request callback:callback];
+}
+
+-(void)setDevSecuritySettingsWithDevid:(NSString *)devid
+                                  mode:(NSInteger)mode
+                                detail:(NSDictionary *)detail
+                             bluetooth:(NSInteger)bluetooth
+                              callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{
+                                                            @"devid" : EMPTY_IF_NIL(devid),
+                                                            @"mode" : EMPTY_IF_NIL([NSNumber numberWithInteger:mode]),
+                                                            @"detail" : EMPTY_IF_NIL(detail),
+                                                            @"bluetooth" : EMPTY_IF_NIL([NSNumber numberWithInteger:bluetooth])
+                                                            }];
+    [self postApi:@"app/securitysetting" andRequest:request callback:callback];
+}
+
+-(void)ignoreOrFindDevWhenWarnComeWithDevid:(NSString *)devid
+                                       type:(NSString *)type
+                                   callback:(API_CALLBACK)callback {
+    ApiRequest * request = [ApiRequest requestWithBizData:@{
+                                                            @"devid" : EMPTY_IF_NIL(devid),
+                                                            @"type"  : EMPTY_IF_NIL(type)
+                                                            }];
+    [self postApi:@"app/ignoreorfind" andRequest:request callback:callback];
+}
+
+-(void)checkDevtypeWithQr:(NSString *)qr callback:(API_CALLBACK)callback {
+    ApiRequest *request = [ApiRequest requestWithBizData:@{@"qr" : EMPTY_IF_NIL(qr)}];
+    [self postApi:@"app/checkdevtype" andRequest:request callback:callback];
+}
+
+-(void)setAlertSwitchWithDevid:(NSString *)devid alertor:(NSInteger)alertor callback:(API_CALLBACK)callback {
+    ApiRequest *request = [ApiRequest requestWithBizData:@{
+                                                           @"devid" : EMPTY_IF_NIL(devid),
+                                                           @"alertor" : [NSNumber numberWithInteger:alertor]
+                                                           }];
+    [self postApi:@"app/alertorswitch" andRequest:request callback:callback];
+}
+
+- (void)sendOperateAlertorWithDevid:(NSString *)devid
+                            command:(NSInteger)command
+                      commandParams:(NSDictionary *)commandParams
+                           callback:(API_CALLBACK)callback {
+    ApiRequest *request = [ApiRequest requestWithBizData:@{
+                                                           @"devid" : EMPTY_IF_NIL(devid),
+                                                           @"command" : [NSNumber numberWithInteger:command],
+                                                           @"commandparams" : EMPTY_IF_NIL(commandParams)
+                                                           }];
+    [self postApi:@"app/operatealertor" andRequest:request callback:callback];
+}
+
+- (void)setSamePushIgnoreWithDevid:(NSString *)devid ignoretime:(NSInteger)ignoretime callback:(API_CALLBACK)callback {
+    ApiRequest *request = [ApiRequest requestWithBizData:@{
+                                                           @"devid" : EMPTY_IF_NIL(devid),
+                                                           @"ignoretime" : [NSNumber numberWithInteger:ignoretime]
+                                                           }];
+    [self postApi:@"app/setsamepushignore" andRequest:request callback:callback];
+}
+
+- (void)ignoreSamePushWithDevid:(NSString *)devid pushtype:(NSString *)pushtype callback:(API_CALLBACK)callback {
+    ApiRequest *request = [ApiRequest requestWithBizData:@{
+                                                           @"devid" : EMPTY_IF_NIL(devid),
+                                                           @"pushtype" : EMPTY_IF_NIL(pushtype)
+                                                           }];
+    [self postApi:@"app/ignoresamepush" andRequest:request callback:callback];
+}
+
+@end

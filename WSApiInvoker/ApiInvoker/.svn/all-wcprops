@@ -1,0 +1,137 @@
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/G100_APP/!svn/ver/1764/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker
+END
+G100ShopApi.h
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/G100_APP/!svn/ver/1728/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/G100ShopApi.h
+END
+ApiResponse.m
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/G100_APP/!svn/ver/1710/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/ApiResponse.m
+END
+G100GoodsApi.h
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/G100GoodsApi.h
+END
+G100OrderApi.h
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/G100OrderApi.h
+END
+G100PaymentApi.h
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/G100PaymentApi.h
+END
+G100UserApi.h
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/G100_APP/!svn/ver/1697/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/G100UserApi.h
+END
+G100ShopApi.m
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/G100_APP/!svn/ver/1728/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/G100ShopApi.m
+END
+G100DevApi.h
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/G100_APP/!svn/ver/1728/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/G100DevApi.h
+END
+G100Api.h
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/G100_APP/!svn/ver/1697/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/G100Api.h
+END
+AFIdonglerApiInvoker.h
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/G100_APP/!svn/ver/1697/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/AFIdonglerApiInvoker.h
+END
+G100GoodsApi.m
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/G100GoodsApi.m
+END
+G100OrderApi.m
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/G100OrderApi.m
+END
+G100PaymentApi.m
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/G100PaymentApi.m
+END
+G100UserApi.m
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/G100_APP/!svn/ver/1697/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/G100UserApi.m
+END
+G100DevApi.m
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/G100_APP/!svn/ver/1728/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/G100DevApi.m
+END
+G100Api.m
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/G100_APP/!svn/ver/1697/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/G100Api.m
+END
+ApiInvoker.h
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/G100_APP/!svn/ver/1697/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/ApiInvoker.h
+END
+AFIdonglerApiInvoker.m
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/G100_APP/!svn/ver/1697/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/AFIdonglerApiInvoker.m
+END
+ApiInvoker.m
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/G100_APP/!svn/ver/1697/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/ApiInvoker.m
+END
+ApiRequest.h
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/G100_APP/!svn/ver/1697/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/ApiRequest.h
+END
+ApiRequest.m
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/G100_APP/!svn/ver/1667/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/ApiRequest.m
+END
+ApiResponse.h
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/G100_APP/!svn/ver/1764/iOS/360qws-G100/branches/360qws-IndustryMap/G100/Helpers/ApiInvoker/ApiResponse.h
+END

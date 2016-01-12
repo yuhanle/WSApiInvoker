@@ -1,0 +1,27 @@
+//
+//  G100GoodsApi.m
+//  G100
+//
+//  Created by Tilink on 15/5/8.
+//  Copyright (c) 2015年 Tilink. All rights reserved.
+//
+
+#import "G100GoodsApi.h"
+
+@implementation G100GoodsApi
+
++(instancetype)sharedInstance {
+    static G100GoodsApi *instance;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        instance = [[self alloc]init];
+    });
+    return instance;
+}
+
+-(void)loadProductListWithType:(NSString *)type callback:(API_CALLBACK)callback {
+    ApiRequest *request = [ApiRequest requestWithBizData:@{@"type" : EMPTY_IF_NIL(type)}];
+    [self postApi:@"product/listprod" andRequest:request callback:callback];
+}
+
+@end

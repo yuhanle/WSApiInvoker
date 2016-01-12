@@ -1,0 +1,144 @@
+//
+//  G100Api.m
+//  G100
+//
+//  Created by Tilink on 15/5/8.
+//  Copyright (c) 2015年 Tilink. All rights reserved.
+//
+
+#import "G100Api.h"
+#import "SoundManager.h"
+
+@implementation G100Api
+- (id)init {
+	//重写init方法 设置不同的请求
+    self = [super init];
+    if (self) {
+        //ENT API Base
+        self.apiBaseUrl = MainNet;
+        self.apiHttpsBaseUrl = MainHttpsNet;
+        self.timeoutInSeconds = 30;//30秒超时
+
+        self.token = [[G100InfoHelper shareInstance] token];
+        if(!self.token) self.token = @"";
+    }
+    
+    return self;
+}
+
+- (void)postApi:(NSString *)api andRequest:(ApiRequest *)apiRequest callback:(API_CALLBACK)callback{
+    [self postApi:api andRequest:apiRequest token:YES https:NO callback:callback];
+}
+
+- (void)postApi:(NSString *)api andRequest:(ApiRequest *)apiRequest token:(BOOL)hasToken callback:(API_CALLBACK)callback {
+    [self postApi:api andRequest:apiRequest token:hasToken https:NO callback:callback];
+}
+
+- (void)postApi:(NSString *)api andRequest:(ApiRequest *)apiRequest token:(BOOL)hasToken https:(BOOL)isHttps callback:(API_CALLBACK)callback {
+    apiRequest.api = api;
+    apiRequest.isHttps = isHttps;
+    apiRequest.hasToken = hasToken;
+    apiRequest.callback = callback;
+    
+    if (!APPDELEGATE.allowNetRequest) {
+        [self addRequest:apiRequest];
+    }else {
+        [self requestApi:api withMethod:@"POST" andRequest:apiRequest callback:callback];
+    }
+}
+
+- (void)handleError:(NSInteger)statusCode response:(ApiResponse *)apiResponse {
+    if (statusCode == 0) {
+        [CURRENTVIEWCONTROLLER showHint:@"未能连接到服务器"];
+    }else if (statusCode == 200) {
+        // 请求成功
+    } else if (statusCode == 404) {
+        [CURRENTVIEWCONTROLLER showHint:@"请求错误"];
+    } else if (statusCode >= 500) {
+        [CURRENTVIEWCONTROLLER showHint:@"服务器异常"];
+    }else if (statusCode == -1001) {
+        [CURRENTVIEWCONTROLLER showHint:@"网络连接超时，请重试"];
+    }else if (statusCode == -1004) {
+        [CURRENTVIEWCONTROLLER showHint:@"未能连接到服务器"];
+    }
+}
+
+-(void)handleError:(NSInteger)statusCode apiRequest:(ApiRequest *)apiRequest response:(ApiResponse *)apiResponse {
+    if (statusCode == 0) {
+        [CURRENTVIEWCONTROLLER showHint:@"未能连接到服务器"];
+    }else if (statusCode == 200) {
+        // 请求成功
+    } else if (statusCode == 404) {
+        [CURRENTVIEWCONTROLLER showHint:@"请求错误"];
+    } else if (statusCode >= 500) {
+        [CURRENTVIEWCONTROLLER showHint:@"服务器异常"];
+    }else if (statusCode == -1001) {
+        [CURRENTVIEWCONTROLLER showHint:@"网络连接超时，请重试"];
+    }else if (statusCode == -1004) {
+        [CURRENTVIEWCONTROLLER showHint:@"未能连接到服务器"];
+    }else if (statusCode == -1005) {
+        [CURRENTVIEWCONTROLLER showHint:@"网络连接已中断"];
+    }
+    
+    if (apiResponse.errCode == 6 || apiResponse.errCode == 64) {
+        [self cancellAllRequest];
+    }
+    
+    NSDateFormatter * formatter = [[NSDateFormatter alloc]init];
+    [formatter setDateFormat:@"yyyy-MM-dd"];
+    NSString * nowDate = [formatter stringFromDate:[NSDate date]];
+    if (apiResponse != nil) {
+        if (apiResponse.errCode == 64 && ![UserManager shareManager].remoteLoginState) {
+            [[NSNotificationCenter defaultCenter]postNotificationName:kGNRemoteLoginMsg object:nil userInfo:nil];
+            [UserManager shareManager].remoteLoginState = YES;
+            [[SoundManager sharedManager]stopAlertSound];
+            [[UserManager shareManager] logoff];
+            
+            NSString * message = [apiResponse custDesc];
+            NSArray * msgArray = [message componentsSeparatedByString:@"|"];
+            NSString * title = [msgArray objectAtIndex:0];
+            NSString * content = [msgArray objectAtIndex:1];
+            
+            G100PromptBox * box = [[[NSBundle mainBundle]loadNibNamed:@"G100PromptBox" owner:self options:nil]firstObject];
+            [box showBoxWith:title prompt:content sureTitle:@"重新登录" sure:^{
+                [AppDelegate setRootViewController:APPDELEGATE.loginNavc fromController:CURRENTVIEWCONTROLLER isLogin:NO];
+            }];
+        }else if (apiResponse.errCode == 6) {
+            __weak G100Api * wself = self;
+            [[UserManager shareManager] autoLoginWithComplete:^(NSInteger statusCode, ApiResponse *response, BOOL requestSuccess) {
+                if (requestSuccess) {
+                    DLog(@"自动登录成功-%@", nowDate);
+                    [wself reRequestAllRequestFromFather];
+                }else {
+                    [wself removeAllRequestFromFather];
+                    DLog(@"自动登录失败-%@", response.errDesc);
+                }
+            }];
+        }else if (apiResponse.errCode == 4) {
+            [self cancellAllRequest];
+            
+            // 自动登录用户名或密码错误时  退出到登陆界面
+            if (APPDELEGATE.window.rootViewController == APPDELEGATE.loginNavc) {
+                // 判断当前是否在登陆界面 是 不作操作   不是 则清空信息跳转到登录界面
+                
+            }else {
+                [UserManager shareManager].remoteLoginState = NO;
+                [[SoundManager sharedManager]stopAlertSound];
+                [[UserManager shareManager] logoff];
+                
+                [AppDelegate setRootViewController:APPDELEGATE.loginNavc fromController:CURRENTVIEWCONTROLLER isLogin:NO];
+                [APPDELEGATE.loginNavc showHint:@"您的密码已过期，请重新登录"];
+            }
+        }
+    }
+}
+
+-(void)reRequestAllRequestFromFather {
+    [self reRequestAllRequest];
+}
+
+-(void)removeAllRequestFromFather {
+    [self removeAllRequest];
+}
+
+@end
