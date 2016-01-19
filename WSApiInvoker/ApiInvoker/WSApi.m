@@ -39,7 +39,7 @@
     apiRequest.hasToken = hasToken;
     apiRequest.callback = callback;
     
-#warning 这里可由全局控制是否允许网络请求，比如异地登陆，为了防止出错，设置后，后续请求都不会发送出去，而回添加到一个数组
+#warning 这里可由全局控制是否允许网络请求，比如异地登陆，为了防止出错，设置后，后续请求都不会发送出去，而会添加到一个数组
     BOOL allowNetRequest = YES;
     if (!allowNetRequest) {
         [self addRequest:apiRequest];

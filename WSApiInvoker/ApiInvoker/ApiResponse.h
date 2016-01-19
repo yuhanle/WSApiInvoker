@@ -36,6 +36,7 @@ enum {
 };
 
 @interface ApiResponse : NSObject
+/**********************  以下均是自定义的属性  *********************/
 //  成功失败标志
 @property (nonatomic, assign) BOOL success;
 //  处理代码
